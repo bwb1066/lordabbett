@@ -12,44 +12,53 @@
 
 :root {
   /* colors */
-  --background-color: white;
-  --light-color: #f8f8f8;
-  --dark-color: #505050;
-  --text-color: #131313;
-  --link-color: #3b63fb;
-  --link-hover-color: #1d3ecf;
+  --background-color: #fff;
+  --light-color: #f8f9f9;
+  --dark-color: #242727;
+  --text-color: #242727;
+  --text-muted: #6b7070;
+  --link-color: #1857a4;
+  --link-hover-color: #0d3d75;
+  --border-color: #ccc;
+  --brand-blue: #1857a4;
+  --brand-dark: #242727;
+  --brand-darkblue: #0e3364;
+  --brand-grey-bg: #f8f9f9;
+  --white: #fff;
+  --black: #000;
+
+  /* section backgrounds */
+  --bg-utility-nav: #eeefef;
+  --bg-nav: #fff;
+  --bg-hero: #f3f2f0;
+  --bg-about: #f8f9f9;
+  --bg-recognition: #0e3364;
+  --bg-footer: #000;
 
   /* fonts */
-  --body-font-family: roboto, roboto-fallback, sans-serif;
-  --heading-font-family: roboto-condensed, roboto-condensed-fallback, sans-serif;
+  --body-font-family: inter, sans-serif;
+  --heading-font-family: inter, sans-serif;
 
   /* body sizes */
-  --body-font-size-m: 22px;
-  --body-font-size-s: 19px;
-  --body-font-size-xs: 17px;
+  --body-font-size-m: 18px;
+  --body-font-size-s: 16px;
+  --body-font-size-xs: 14px;
 
   /* heading sizes */
-  --heading-font-size-xxl: 55px;
-  --heading-font-size-xl: 44px;
-  --heading-font-size-l: 34px;
-  --heading-font-size-m: 27px;
-  --heading-font-size-s: 24px;
-  --heading-font-size-xs: 22px;
+  --heading-font-size-xxl: 48px;
+  --heading-font-size-xl: 40px;
+  --heading-font-size-l: 32px;
+  --heading-font-size-m: 24px;
+  --heading-font-size-s: 20px;
+  --heading-font-size-xs: 18px;
 
   /* nav height */
-  --nav-height: 64px;
-}
-
-/* fallback fonts */
-@font-face {
-  font-family: roboto-condensed-fallback;
-  size-adjust: 88.82%;
-  src: local('Arial');
+  --nav-height: 83px;
 }
 
 @font-face {
-  font-family: roboto-fallback;
-  size-adjust: 99.529%;
+  font-family: inter-fallback;
+  size-adjust: 107%;
   src: local('Arial');
 }
 

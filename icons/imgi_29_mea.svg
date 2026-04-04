@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 25.2.3, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="flag-icon-css-no" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+	 y="0px" viewBox="0 0 640 480" style="enable-background:new 0 0 640 480;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#122E55;}
+	.st1{enable-background:new    ;}
+	.st2{fill:#FFFFFF;}
+</style>
+<path class="st0" d="M0-2.2h640v480H0V-2.2z"/>
+<g class="st1">
+	<path class="st2" d="M115.9,351.6V102.9h35l72.3,192l74.6-192h34.7v248.7h-28.7V161.8l-77.2,193.9h-6L145,162.2v189.4H115.9z"/>
+	<path class="st2" d="M392.9,351.6V102.9h145v25.7H422.7v79.8h82.4v25.7h-82.8v91.7h124.5v25.7H392.9z"/>
+</g>
+</svg>

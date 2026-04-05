@@ -1,1 +1,61 @@
 /* add global styles that can be loaded post LCP here */
+
+/* floating launcher shared styles */
+.a11y-launcher,
+.ai-launcher {
+  position: fixed;
+  right: 24px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #1275b3;
+  color: #fff;
+  border: none;
+  border-radius: 28px;
+  padding: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 20%);
+  transition: padding 0.3s ease;
+}
+
+.a11y-launcher {
+  bottom: 24px;
+}
+
+.ai-launcher {
+  bottom: 80px;
+}
+
+.a11y-launcher:hover,
+.ai-launcher:hover {
+  padding: 8px 16px 8px 20px;
+}
+
+.a11y-launcher-label,
+.ai-launcher-label {
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: var(--body-font-family, sans-serif);
+  font-size: 14px;
+  font-weight: 500;
+  transition: max-width 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+
+.a11y-launcher:hover .a11y-launcher-label,
+.ai-launcher:hover .ai-launcher-label {
+  max-width: 280px;
+  opacity: 1;
+}
+
+.a11y-launcher-icon,
+.ai-launcher-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}

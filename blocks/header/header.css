@@ -677,9 +677,19 @@ header nav {
   gap: 12px;
 }
 
+.nav-search-row {
+  border-bottom: 1px solid rgb(0 0 0 / 8%);
+}
+
+.nav-search-panel-inner .search-icon,
+.nav-search-panel-inner .ask-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
 .nav-search-panel-inner .search-icon {
   color: var(--text-color);
-  flex-shrink: 0;
   margin-top: 10px;
 }
 
@@ -697,7 +707,8 @@ header nav {
   color: var(--text-muted);
 }
 
-.nav-search-submit {
+.nav-search-submit,
+.nav-ask-submit {
   background: #e8eef5;
   border: none;
   border-radius: 50%;
@@ -712,7 +723,8 @@ header nav {
   transition: background 0.2s ease, color 0.2s ease;
 }
 
-.nav-search-submit:hover {
+.nav-search-submit:hover,
+.nav-ask-submit:hover {
   background: var(--brand-blue);
   color: var(--white);
 }

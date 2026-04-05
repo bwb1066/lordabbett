@@ -1,6 +1,13 @@
 const SUPABASE_URL = 'https://cyjquwhkmzyedkwuaffc.supabase.co/functions/v1/brand-chat';
+const CONTACT_URL = 'https://www.lordabbett.com/en-us/financial-advisor/about-us/contact-us.html';
+const CONTACT_PHRASES = [
+  'contact me', 'contact us', 'reach out', 'speak with',
+  'talk to', 'call me', 'rep', 'representative',
+  'advisor', 'adviser', 'someone to help',
+];
 
 let modal = null;
+let questionCount = 0;
 const conversationHistory = [];
 
 function close() {
@@ -47,7 +54,7 @@ function markdownToHtml(md) {
   return html;
 }
 
-function addMessage(container, text, role, citations) {
+function addMessage(container, text, role, citations, suggestions) {
   const msg = document.createElement('div');
   msg.className = `concierge-message concierge-${role}`;
 
@@ -84,6 +91,35 @@ function addMessage(container, text, role, citations) {
     content.className = 'concierge-content';
     content.innerHTML = markdownToHtml(text);
     msg.append(content);
+
+    // Suggested follow-up questions
+    if (suggestions?.length) {
+      const suggestionsEl = document.createElement('div');
+      suggestionsEl.className = 'concierge-suggestions';
+      suggestions.filter((q) => q?.trim()).forEach((q) => {
+        if (q === '__CONTACT__') {
+          const link = document.createElement('a');
+          link.href = CONTACT_URL;
+          link.target = '_blank';
+          link.rel = 'noopener';
+          link.className = 'concierge-suggestion concierge-contact';
+          link.textContent = 'Have a Lord Abbett rep reach out - or add your email to save time';
+          suggestionsEl.append(link);
+        } else {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'concierge-suggestion';
+          btn.textContent = q;
+          btn.addEventListener('click', async () => {
+            suggestionsEl.remove();
+            // eslint-disable-next-line no-use-before-define
+            await sendMessage(container, q);
+          });
+          suggestionsEl.append(btn);
+        }
+      });
+      if (suggestionsEl.children.length) msg.append(suggestionsEl);
+    }
   } else {
     msg.textContent = text;
   }
@@ -97,9 +133,29 @@ function addMessage(container, text, role, citations) {
   return msg;
 }
 
+function shouldShowContact(userText) {
+  const lower = userText.toLowerCase();
+  if (CONTACT_PHRASES.some((p) => lower.includes(p))) return true;
+  if (questionCount >= 5) return true;
+  return false;
+}
+
+function isEmail(str) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str.trim());
+}
+
 async function sendMessage(messagesContainer, text) {
+  questionCount += 1;
   addMessage(messagesContainer, text, 'user');
   conversationHistory.push({ role: 'user', content: text });
+
+  // Intercept email addresses — don't send to API
+  if (isEmail(text)) {
+    const reply = 'A Lord Abbett representative will be in touch very soon!';
+    addMessage(messagesContainer, reply, 'assistant');
+    conversationHistory.push({ role: 'assistant', content: reply });
+    return;
+  }
 
   const thinking = document.createElement('div');
   thinking.className = 'concierge-message concierge-assistant concierge-thinking';
@@ -125,12 +181,21 @@ async function sendMessage(messagesContainer, text) {
 
     let reply = data.text || '';
     const citations = data.citations || [];
+    const suggestions = data.suggestions || [];
     if (!reply) reply = 'I wasn\'t able to find an answer. Please try rephrasing your question.';
 
     // Remove citation markers like 【...】
     reply = reply.replace(/【[^】]*】/g, '');
-    addMessage(messagesContainer, reply, 'assistant', citations);
-    conversationHistory.push({ role: 'assistant', content: reply, citations });
+
+    // Inject contact suggestion when appropriate
+    if (shouldShowContact(text)) {
+      suggestions.push('__CONTACT__');
+    }
+
+    addMessage(messagesContainer, reply, 'assistant', citations, suggestions);
+    conversationHistory.push({
+      role: 'assistant', content: reply, citations, suggestions,
+    });
   } catch {
     thinking.remove();
     addMessage(messagesContainer, 'Something went wrong. Please try again.', 'assistant');
@@ -244,7 +309,7 @@ function buildModal(initialQuery) {
 
   // Restore previous conversation
   conversationHistory.forEach((msg) => {
-    addMessage(messages, msg.content, msg.role, msg.citations);
+    addMessage(messages, msg.content, msg.role, msg.citations, msg.suggestions);
   });
 
   // Send initial query

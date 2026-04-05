@@ -1,0 +1,42 @@
+/* important-info block */
+main > .section > .important-info-wrapper {
+  max-width: 1024px;
+}
+
+.important-info {
+  max-width: 990px;
+  margin: 0 auto;
+  padding: 43px 42px 31px;
+}
+
+/* heading */
+.important-info h5,
+.important-info h5 strong {
+  font-family: inter, DINPro, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: rgb(36 39 39);
+  line-height: 19px;
+  margin: 0 0 12px;
+}
+
+/* horizontal rule */
+.important-info hr {
+  border: none;
+  border-top: 1px solid rgb(0 0 0 / 15%);
+  margin: 0 0 24px;
+}
+
+/* body text */
+.important-info p {
+  font-family: inter, DINPro, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgb(36 39 39);
+  line-height: 22px;
+  margin: 0 0 16px;
+}
+
+.important-info p strong {
+  font-weight: 500;
+}

@@ -19,8 +19,8 @@ function showBackdrop(sections) {
     backdrop.className = 'nav-backdrop';
     backdrop.addEventListener('click', () => {
       if (sections) {
-        sections.querySelectorAll('.nav-item').forEach((item) => {
-          item.setAttribute('aria-expanded', false);
+        sections.querySelectorAll('.nav-item-label').forEach((btn) => {
+          btn.setAttribute('aria-expanded', 'false');
         });
       }
       // Close search panel if open
@@ -35,8 +35,8 @@ function showBackdrop(sections) {
 
 function toggleAllNavSections(sections, expanded = false) {
   if (!sections) return;
-  sections.querySelectorAll('.nav-item').forEach((item) => {
-    item.setAttribute('aria-expanded', expanded);
+  sections.querySelectorAll('.nav-item-label').forEach((btn) => {
+    btn.setAttribute('aria-expanded', expanded);
   });
 }
 
@@ -191,6 +191,7 @@ export default async function decorate(block) {
       if (logoPicture) {
         const brandLink = document.createElement('a');
         brandLink.href = '/';
+        brandLink.setAttribute('aria-label', 'Lord Abbett Home');
         brandLink.append(logoPicture);
         brand.append(brandLink);
       }
@@ -229,12 +230,12 @@ export default async function decorate(block) {
 
         const navItem = document.createElement('div');
         navItem.className = 'nav-item';
-        navItem.setAttribute('aria-expanded', 'false');
         navItem.dataset.nav = label;
 
         const navLabel = document.createElement('button');
         navLabel.className = 'nav-item-label';
         navLabel.type = 'button';
+        navLabel.setAttribute('aria-expanded', 'false');
 
         const labelText = document.createElement('span');
         labelText.textContent = displayText;
@@ -294,9 +295,9 @@ export default async function decorate(block) {
 
         navLabel.addEventListener('click', (e) => {
           e.stopPropagation();
-          const isExpanded = navItem.getAttribute('aria-expanded') === 'true';
+          const isExpanded = navLabel.getAttribute('aria-expanded') === 'true';
           toggleAllNavSections(navItems);
-          navItem.setAttribute('aria-expanded', isExpanded ? 'false' : 'true');
+          navLabel.setAttribute('aria-expanded', isExpanded ? 'false' : 'true');
           if (!isExpanded) showBackdrop(navItems);
           else hideBackdrop();
         });

@@ -1,3 +1,17 @@
+function optimizeImage(picture, mobileWidth = 400, desktopWidth = 750) {
+  picture.querySelectorAll('source').forEach((source) => {
+    const srcset = source.getAttribute('srcset');
+    if (srcset) {
+      const width = source.media?.includes('min-width') ? desktopWidth : mobileWidth;
+      source.setAttribute('srcset', srcset.replace(/width=\d+/, `width=${width}`));
+    }
+  });
+  const img = picture.querySelector('img');
+  if (img?.src) {
+    img.src = img.src.replace(/width=\d+/, `width=${mobileWidth}`);
+  }
+}
+
 export default function decorate(block) {
   const rows = [...block.children];
   if (rows.length < 3) return;
@@ -26,6 +40,7 @@ export default function decorate(block) {
 
       const pic = card.querySelector('picture');
       if (pic) {
+        optimizeImage(pic);
         const wrap = document.createElement('div');
         wrap.className = 'webinar-img-wrap';
         pic.parentNode.insertBefore(wrap, pic);

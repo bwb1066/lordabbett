@@ -30,18 +30,30 @@ export default async function decorate(block) {
       // Logo
       const logoPic = cols[0]?.querySelector('picture');
       if (logoPic) {
-        const logoDiv = document.createElement('div');
-        logoDiv.className = 'footer-logo';
-        logoDiv.append(logoPic);
-        topBar.append(logoDiv);
+        const logoLink = document.createElement('a');
+        logoLink.href = '/';
+        logoLink.className = 'footer-logo';
+        logoLink.setAttribute('aria-label', 'Lord Abbett Home');
+        logoLink.append(logoPic);
+        topBar.append(logoLink);
       }
       // Social icons
       const socialCol = cols[cols.length - 1];
       if (socialCol) {
         const socialDiv = document.createElement('div');
         socialDiv.className = 'footer-social';
-        socialCol.querySelectorAll('picture').forEach((pic) => {
-          socialDiv.append(pic);
+        socialCol.querySelectorAll('a').forEach((a) => {
+          const link = document.createElement('a');
+          link.href = a.href;
+          link.target = '_blank';
+          link.rel = 'noopener';
+          link.setAttribute(
+            'aria-label',
+            a.title || 'Social media',
+          );
+          const pic = a.querySelector('picture');
+          if (pic) link.append(pic);
+          socialDiv.append(link);
         });
         topBar.append(socialDiv);
       }

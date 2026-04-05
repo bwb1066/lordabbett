@@ -31,6 +31,11 @@ footer .footer-top {
   padding: 40px 32px 32px;
 }
 
+footer .footer-logo {
+  display: block;
+  line-height: 0;
+}
+
 footer .footer-logo img {
   height: 48px;
   width: auto;
@@ -62,7 +67,6 @@ footer .footer-nav {
   max-width: 990px;
   margin: 0 auto;
   padding: 32px 32px 40px;
-  border-top: 1px solid rgb(255 255 255 / 15%);
   display: flex;
   gap: 48px;
 }

@@ -3,6 +3,36 @@ import { loadFragment } from '../fragment/fragment.js';
 
 const isDesktop = window.matchMedia('(min-width: 900px)');
 
+let backdrop = null;
+
+function hideBackdrop() {
+  if (backdrop) {
+    backdrop.remove();
+    backdrop = null;
+  }
+  document.body.style.overflow = '';
+}
+
+function showBackdrop(sections) {
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.className = 'nav-backdrop';
+    backdrop.addEventListener('click', () => {
+      if (sections) {
+        sections.querySelectorAll('.nav-item').forEach((item) => {
+          item.setAttribute('aria-expanded', false);
+        });
+      }
+      // Close search panel if open
+      document.querySelector('.nav-search.active')?.classList.remove('active');
+      document.querySelector('.nav-search-panel.active')?.classList.remove('active');
+      hideBackdrop();
+    });
+    document.body.append(backdrop);
+  }
+  document.body.style.overflow = 'hidden';
+}
+
 function toggleAllNavSections(sections, expanded = false) {
   if (!sections) return;
   sections.querySelectorAll('.nav-item').forEach((item) => {
@@ -40,6 +70,7 @@ export default async function decorate(block) {
   // --- Utilities bar ---
   const utilitiesBlock = nav.querySelector('.utilities');
   let utilitiesBar = null;
+  let searchPanel = null;
   if (utilitiesBlock) {
     utilitiesBar = document.createElement('div');
     utilitiesBar.className = 'nav-utilities';
@@ -56,6 +87,9 @@ export default async function decorate(block) {
         const roleSelector = document.createElement('div');
         roleSelector.className = 'nav-role-selector';
         roleSelector.innerHTML = leftCol.innerHTML;
+        roleSelector.querySelectorAll('a').forEach((a) => {
+          a.replaceWith(...a.childNodes);
+        });
         roleSelector.style.cursor = 'pointer';
         roleSelector.addEventListener('click', async () => {
           const { default: openGeoSelector } = await import('../geo-selector/geo-selector.js');
@@ -214,6 +248,8 @@ export default async function decorate(block) {
           const isExpanded = navItem.getAttribute('aria-expanded') === 'true';
           toggleAllNavSections(navItems);
           navItem.setAttribute('aria-expanded', isExpanded ? 'false' : 'true');
+          if (!isExpanded) showBackdrop(navItems);
+          else hideBackdrop();
         });
 
         navItems.append(navItem);
@@ -226,8 +262,29 @@ export default async function decorate(block) {
       searchBtn.className = 'nav-search';
       searchBtn.type = 'button';
       searchBtn.setAttribute('aria-label', 'Search');
-      searchBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>';
+      searchBtn.innerHTML = '<span class="nav-search-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span><span class="nav-search-close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></span>';
       navInner.append(searchBtn);
+
+      // Search panel
+      searchPanel = document.createElement('div');
+      searchPanel.className = 'nav-search-panel';
+      searchPanel.innerHTML = `<div class="nav-search-panel-inner">
+        <span class="search-icon"><svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" aria-hidden="true" height="24" width="24"><path fill="none" d="M0 0h24v24H0z"></path><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg></span>
+        <input type="text" aria-label="Search">
+        <button type="button" class="nav-search-submit" aria-label="Submit search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+      </div>`;
+
+      searchBtn.addEventListener('click', () => {
+        const isActive = searchBtn.classList.toggle('active');
+        searchPanel.classList.toggle('active', isActive);
+        if (isActive) {
+          toggleAllNavSections(navItems);
+          showBackdrop(navItems);
+          searchPanel.querySelector('input').focus();
+        } else {
+          hideBackdrop();
+        }
+      });
     }
 
     navBlock.remove();
@@ -255,5 +312,6 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   if (utilitiesBar) navWrapper.append(utilitiesBar);
   navWrapper.append(nav);
+  if (searchPanel) navWrapper.append(searchPanel);
   block.append(navWrapper);
 }

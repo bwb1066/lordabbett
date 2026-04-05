@@ -13,10 +13,18 @@ function close() {
 export default async function open() {
   if (modal) return;
 
+  // Load CSS
+  if (!document.querySelector('link[href*="geo-selector.css"]')) {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = '/blocks/geo-selector/geo-selector.css';
+    document.head.append(link);
+  }
+
   const fragment = await loadFragment('/fragments/geo-selector');
   if (!fragment) return;
 
-  const content = fragment.querySelector(':scope > div > div');
+  const content = fragment.querySelector(':scope > div > div') || fragment.querySelector(':scope > div');
   if (!content) return;
 
   // Parse fragment content

@@ -38,8 +38,10 @@
 }
 
 .nav-role-selector img {
-  width: 20px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
+  margin-bottom: 4px;
+  margin-right: 4px;
   display: block;
   vertical-align: middle;
   position: relative;
@@ -72,11 +74,8 @@
   text-underline-offset: 3px;
 }
 
-.nav-util-links a:not(.nav-login-btn) {
-  text-decoration: underline !important;
-}
-
 .nav-util-links a:not(.nav-login-btn):hover {
+  text-decoration: underline !important;
   color: var(--link-color);
 }
 
@@ -360,7 +359,15 @@ header nav {
 }
 
 .nav-dropdown ul > li > ul > li > a:hover {
-  color: var(--text-color);
+  color: #12417c;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+}
+
+.nav-dropdown a.button:hover {
+  color: #12417c;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
 }
 
 /* per-menu heights */
@@ -375,8 +382,11 @@ header nav {
   gap: 348px;
 }
 
+.nav-item[data-nav="insights"] > .nav-dropdown {
+  height: 192px;
+}
+
 .nav-item[data-nav="insights"] .nav-dropdown-inner {
-  height: 145px;
   overflow: hidden;
   margin-left: -295px;
 }
@@ -391,7 +401,8 @@ header nav {
 }
 
 .nav-item[data-nav="insights"] .nav-dropdown-col + .nav-dropdown-col {
-  padding-left: 210px;
+  padding-left: 99px;
+  margin-left: 321px;
 }
 
 .nav-item[data-nav="insights"] .nav-dropdown-col a:any-link {
@@ -401,7 +412,9 @@ header nav {
 }
 
 .nav-item[data-nav="insights"] .nav-dropdown-col a:hover {
-  color: var(--text-color);
+  color: #12417c;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
 }
 
 /* "Learning Center" heading in second col */
@@ -425,7 +438,7 @@ header nav {
 }
 
 .nav-item[data-nav="resources"] .nav-dropdown-inner {
-  height: 177px;
+  height: 128px;
   overflow: hidden;
   margin-left: -450px;
 }
@@ -452,7 +465,9 @@ header nav {
 }
 
 .nav-item[data-nav="resources"] .nav-dropdown-col a:hover {
-  color: var(--text-color);
+  color: #12417c;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
 }
 
 /* heading links in resources */
@@ -465,9 +480,9 @@ header nav {
 }
 
 .nav-item[data-nav="about-us"] .nav-dropdown-inner {
-  height: 255px;
+  height: 164px;
   overflow: hidden;
-  margin-left: -500px;
+  margin-left: -825px;
 }
 
 .nav-item[data-nav="about-us"] .nav-dropdown-col + .nav-dropdown-col {
@@ -481,7 +496,9 @@ header nav {
 }
 
 .nav-item[data-nav="about-us"] .nav-dropdown-col a:hover {
-  color: var(--text-color);
+  color: #12417c;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
 }
 
 /* hide "Company" / "Connect" sub-headings */
@@ -532,12 +549,50 @@ header nav {
   gap: 8px;
 }
 
-.nav-dropdown a.button:hover {
+.nav-item[data-nav="about-us"] .nav-dropdown a.button {
+  color: rgb(0 0 238);
+  font-weight: 500;
+  background: none !important;
+}
+
+.nav-item[data-nav="about-us"] .nav-dropdown a.button:hover {
+  color: #12417c;
+  background: none !important;
   text-decoration: underline;
+  text-decoration-color: #000;
+  text-decoration-thickness: 1px;
+}
+
+.nav-item[data-nav="about-us"] .nav-dropdown a.button::before {
+  content: '';
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background-color: #e3ebf4;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230000ee'%3E%3Cpath d='M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 14px;
 }
 
 .nav-dropdown a.button::after {
   display: none;
+}
+
+/* backdrop overlay */
+.nav-backdrop {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
+  height: calc(32px + 100vh);
+  background: rgb(90 90 90 / 76%);
+  z-index: 99;
 }
 
 /* search */
@@ -550,8 +605,102 @@ header nav {
   color: var(--text-color);
   display: flex;
   align-items: center;
+  position: relative;
+  align-self: stretch;
 }
 
 .nav-search:hover {
   color: var(--text-color);
+}
+
+.nav-search .nav-search-icon svg {
+  margin-top: 7px;
+}
+
+.nav-search .nav-search-close {
+  display: none;
+}
+
+.nav-search.active .nav-search-icon {
+  display: none;
+}
+
+.nav-search.active .nav-search-close {
+  display: block;
+  color: var(--brand-blue);
+}
+
+.nav-search::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 4px;
+  background: var(--brand-blue);
+  transition: width 0.3s ease;
+}
+
+.nav-search.active::after {
+  width: 100%;
+}
+
+/* search panel */
+.nav-search-panel {
+  display: none;
+  background: var(--white);
+  padding: 16px 0;
+}
+
+.nav-search-panel.active {
+  display: block;
+}
+
+.nav-search-panel-inner {
+  display: flex;
+  align-items: center;
+  max-width: 990px;
+  margin: 0 auto;
+  padding: 13px;
+  gap: 12px;
+}
+
+.nav-search-panel-inner .search-icon {
+  color: var(--text-color);
+  flex-shrink: 0;
+  margin-top: 10px;
+}
+
+.nav-search-panel-inner input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: var(--body-font-family);
+  font-size: 16px;
+  padding: 8px 0;
+  background: transparent;
+}
+
+.nav-search-panel-inner input::placeholder {
+  color: var(--text-muted);
+}
+
+.nav-search-submit {
+  background: #e8eef5;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: var(--brand-blue);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav-search-submit:hover {
+  background: var(--brand-blue);
+  color: var(--white);
 }

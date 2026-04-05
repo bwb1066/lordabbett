@@ -119,6 +119,7 @@ async function sendMessage(messagesContainer, text) {
     });
     const data = await resp.json();
     if (data.debug) console.warn('brand-chat debug:', data.debug);
+    console.log('brand-chat response:', JSON.stringify(data).slice(0, 500));
 
     thinking.remove();
 

@@ -1,0 +1,142 @@
+/* webinar-columns block */
+.webinar-columns {
+  max-width: 990px;
+  margin: 0 auto;
+  padding: 48px 32px;
+}
+
+/* heading */
+.webinar-heading h2 {
+  font-family: var(--heading-font-family);
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--text-color);
+  margin: 0 0 32px;
+}
+
+/* cards row */
+.webinar-cards {
+  display: flex;
+  gap: 32px;
+}
+
+.webinar-cards > div {
+  flex: 1;
+}
+
+/* image + badge */
+.webinar-img-wrap {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.webinar-img-wrap picture {
+  display: block;
+}
+
+.webinar-img-wrap img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+}
+
+.webinar-date-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgb(255 255 255 / 90%);
+  border-radius: 6px;
+  padding: 4px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+}
+
+.webinar-badge-month {
+  font-size: 11px;
+  font-weight: 500;
+  color: #8b6f4e;
+  text-transform: capitalize;
+}
+
+.webinar-badge-day {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+/* status label */
+.webinar-status {
+  color: #8b6f4e;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* date text */
+.webinar-cards > div > p {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0 0 6px;
+  line-height: 1.4;
+}
+
+/* title */
+.webinar-cards h4 {
+  font-family: var(--body-font-family);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 12px;
+  line-height: 1.3;
+}
+
+.webinar-cards h4 a:any-link {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.webinar-cards h4 a:hover {
+  text-decoration: underline;
+}
+
+/* CE Credit tag */
+.webinar-tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 500;
+  color: #8b6f4e;
+  border: 1px solid #8b6f4e;
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin: 0;
+}
+
+/* view all link */
+.webinar-footer {
+  margin-top: 24px;
+}
+
+.webinar-view-all:any-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.webinar-view-all:hover {
+  text-decoration: underline;
+}
+
+/* mobile */
+@media (width <= 899px) {
+  .webinar-cards {
+    flex-direction: column;
+    gap: 24px;
+  }
+}

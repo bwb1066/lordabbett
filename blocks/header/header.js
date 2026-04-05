@@ -274,13 +274,40 @@ export default async function decorate(block) {
         <button type="button" class="nav-search-submit" aria-label="Submit search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
       </div>`;
 
-      searchBtn.addEventListener('click', () => {
+      const searchInput = searchPanel.querySelector('input');
+      const submitBtn = searchPanel.querySelector('.nav-search-submit');
+
+      const submitSearch = async () => {
+        const query = searchInput.value.trim();
+        if (!query) return;
+        searchInput.value = '';
+        searchBtn.classList.remove('active');
+        searchPanel.classList.remove('active');
+        hideBackdrop();
+        const { default: openConcierge } = await import('../brand-concierge/brand-concierge.js');
+        openConcierge(query);
+      };
+
+      submitBtn.addEventListener('click', submitSearch);
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          submitSearch();
+        }
+      });
+
+      searchBtn.addEventListener('click', async () => {
+        const mod = await import('../brand-concierge/brand-concierge.js');
+        if (mod.hasConversation()) {
+          mod.default();
+          return;
+        }
         const isActive = searchBtn.classList.toggle('active');
         searchPanel.classList.toggle('active', isActive);
         if (isActive) {
           toggleAllNavSections(navItems);
           showBackdrop(navItems);
-          searchPanel.querySelector('input').focus();
+          searchInput.focus();
         } else {
           hideBackdrop();
         }

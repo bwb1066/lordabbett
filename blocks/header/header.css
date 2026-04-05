@@ -377,6 +377,10 @@ header nav {
   margin-left: -135px;
 }
 
+.nav-item[data-nav="investments"] .nav-dropdown-col:first-child {
+  margin-right: 256px;
+}
+
 .nav-item[data-nav="investments"] .nav-dropdown-col > ul {
   display: flex;
   gap: 348px;
@@ -384,11 +388,11 @@ header nav {
 
 .nav-item[data-nav="insights"] > .nav-dropdown {
   height: 192px;
+  margin-left: -383px;
 }
 
 .nav-item[data-nav="insights"] .nav-dropdown-inner {
   overflow: hidden;
-  margin-left: -295px;
 }
 
 .nav-item[data-nav="insights"] .nav-dropdown-col:first-child > ul {
@@ -401,8 +405,8 @@ header nav {
 }
 
 .nav-item[data-nav="insights"] .nav-dropdown-col + .nav-dropdown-col {
-  padding-left: 99px;
-  margin-left: 321px;
+  margin-left: 554px;
+  padding-left: 64px;
 }
 
 .nav-item[data-nav="insights"] .nav-dropdown-col a:any-link {
@@ -440,7 +444,11 @@ header nav {
 .nav-item[data-nav="resources"] .nav-dropdown-inner {
   height: 128px;
   overflow: hidden;
-  margin-left: -450px;
+  margin-left: -595px;
+}
+
+.nav-item[data-nav="resources"] .nav-dropdown-col:first-child {
+  margin-right: 424px;
 }
 
 .nav-item[data-nav="resources"] .nav-dropdown-col:first-child > ul {
@@ -451,6 +459,10 @@ header nav {
 .nav-item[data-nav="resources"] .nav-dropdown-col:first-child > ul > li {
   flex: 1;
   white-space: nowrap;
+}
+
+.nav-item[data-nav="resources"] .nav-dropdown-col:first-child > ul > li:last-child {
+  padding-left: 77px;
 }
 
 .nav-item[data-nav="resources"] .nav-dropdown-col + .nav-dropdown-col {

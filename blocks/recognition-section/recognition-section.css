@@ -1,0 +1,114 @@
+/* recognition-section block */
+main > .section.recognition-section-container {
+  max-width: unset !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+main > .section > .recognition-section-wrapper {
+  max-width: unset !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.recognition-section {
+  position: relative;
+  background: linear-gradient(95deg, #0a1e3d 0%, #0e3364 40%, #1a4a7a 100%);
+  height: 240px;
+  overflow: hidden;
+}
+
+.recognition-section > div {
+  display: flex;
+  height: 100%;
+}
+
+/* text column — sits in the 25%-50% of the page */
+.recognition-text {
+  max-width: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 21%;
+  padding-right: 35px;
+  box-sizing: border-box;
+}
+
+.recognition-text h2 {
+  font-family: figtree, DINPro, Arial, sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--white);
+  margin: 0 0 12px;
+  line-height: 38px;
+}
+
+.recognition-text p {
+  font-size: 14px;
+  color: rgb(255 255 255 / 75%);
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.recognition-text a:any-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 28px;
+  border: none;
+  border-radius: 24px;
+  color: var(--white);
+  font-family: var(--body-font-family);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 17px;
+  text-decoration: none;
+  background: #12417c;
+}
+
+.recognition-text a:hover {
+  background: #0c2d56;
+  color: var(--white);
+}
+
+/* image column — 50% width, full height */
+.recognition-image {
+  width: 50%;
+  height: 100%;
+}
+
+.recognition-image picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.recognition-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* mobile */
+@media (width <= 899px) {
+  .recognition-section {
+    height: auto;
+  }
+
+  .recognition-section > div {
+    flex-direction: column;
+  }
+
+  .recognition-text {
+    width: 100%;
+    padding: 32px 24px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .recognition-image {
+    width: 100%;
+    height: 180px;
+  }
+}

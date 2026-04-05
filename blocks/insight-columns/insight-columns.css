@@ -1,0 +1,116 @@
+/* insight-columns block */
+.insight-columns {
+  max-width: 990px;
+  margin: 0 auto;
+  padding: 48px 32px;
+}
+
+/* heading */
+.insight-heading h2 {
+  font-family: var(--heading-font-family);
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--text-color);
+  margin: 0 0 32px;
+}
+
+/* cards row */
+.insight-cards {
+  display: flex;
+  gap: 32px;
+}
+
+.insight-cards > div {
+  flex: 1;
+}
+
+/* image */
+.insight-cards picture {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.insight-cards img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+}
+
+/* status label */
+.insight-status {
+  color: #8b6f4e;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* date + status line */
+.insight-cards > div > p:first-of-type {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0 0 6px;
+  line-height: 1.4;
+}
+
+/* date line */
+.insight-cards > div > p:nth-of-type(2) {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0 0 6px;
+  line-height: 1.4;
+}
+
+/* title */
+.insight-cards h4 {
+  font-family: var(--body-font-family);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 8px;
+  line-height: 1.3;
+}
+
+.insight-cards h4 a:any-link {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.insight-cards h4 a:hover {
+  text-decoration: underline;
+}
+
+/* description */
+.insight-cards > div > p:last-of-type {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* view all link */
+.insight-footer {
+  margin-top: 24px;
+}
+
+.insight-view-all:any-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.insight-view-all:hover {
+  text-decoration: underline;
+}
+
+/* mobile */
+@media (width <= 899px) {
+  .insight-cards {
+    flex-direction: column;
+    gap: 24px;
+  }
+}

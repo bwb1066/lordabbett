@@ -204,34 +204,68 @@
 
 /* citations */
 .concierge-citations {
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border-color, #ccc);
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+  margin-bottom: 8px;
+}
+
+.concierge-citation-card:any-link {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-}
-
-.concierge-citations-heading {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-muted, #6b7070);
-  margin-bottom: 2px;
-}
-
-.concierge-citations a:any-link {
-  font-size: 13px;
+  min-width: 200px;
+  max-width: 240px;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 10px;
+  overflow: hidden;
+  text-decoration: none;
   color: var(--text-color, #242727);
-  text-decoration: underline;
+  flex-shrink: 0;
+  transition: box-shadow 0.15s ease;
+}
+
+.concierge-citation-card:hover {
+  box-shadow: 0 2px 12px rgb(0 0 0 / 10%);
+}
+
+.concierge-citation-img {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  display: block;
+}
+
+.concierge-citation-text {
+  padding: 10px 12px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 4px;
 }
 
-.concierge-citations a:hover {
-  color: var(--brand-blue, #12417c);
+.concierge-citation-title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.concierge-citation-desc {
+  font-size: 11px;
+  color: var(--text-muted, #6b7070);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.concierge-citation-url {
+  font-size: 11px;
+  color: var(--text-muted, #6b7070);
 }
 
 /* thinking dots */

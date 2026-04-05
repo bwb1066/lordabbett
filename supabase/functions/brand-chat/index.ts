@@ -2,6 +2,43 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
 
+interface Citation {
+  url: string;
+  title: string;
+  description: string;
+  image: string;
+}
+
+async function fetchMeta(url: string): Promise<{ description: string; image: string }> {
+  try {
+    const resp = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      redirect: "follow",
+      signal: AbortSignal.timeout(5000),
+    });
+    const html = await resp.text();
+
+    const getTag = (name: string): string => {
+      const re = new RegExp(
+        `<meta[^>]+(?:name|property)=["']${name}["'][^>]+content=["']([^"']*)["']`,
+        "i"
+      );
+      const re2 = new RegExp(
+        `<meta[^>]+content=["']([^"']*)["'][^>]+(?:name|property)=["']${name}["']`,
+        "i"
+      );
+      return re.exec(html)?.[1] || re2.exec(html)?.[1] || "";
+    };
+
+    const description = getTag("og:description") || getTag("description");
+    const image = getTag("og:image");
+
+    return { description, image };
+  } catch {
+    return { description: "", image: "" };
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, {
@@ -41,22 +78,24 @@ Deno.serve(async (req) => {
 
   const data = await response.json();
 
-  // If OpenAI returned an error, pass it through for debugging
   if (data.error) {
-    return new Response(JSON.stringify({ text: "", citations: [], debug: data.error }), {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
+    return new Response(
+      JSON.stringify({ text: "", citations: [], debug: data.error }),
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+      }
+    );
   }
 
-  // Extract text and citations from response
+  // Extract text and unique citation URLs
   const messageOutput = data.output?.find(
     (o: { type: string }) => o.type === "message"
   );
   let text = "";
-  const citations: { url: string; title: string }[] = [];
+  const urlMap = new Map<string, string>();
 
   if (messageOutput?.content) {
     for (const c of messageOutput.content) {
@@ -64,11 +103,8 @@ Deno.serve(async (req) => {
         text += c.text;
         if (c.annotations) {
           for (const a of c.annotations) {
-            if (a.type === "url_citation" && a.url) {
-              const exists = citations.some((ci) => ci.url === a.url);
-              if (!exists) {
-                citations.push({ url: a.url, title: a.title || a.url });
-              }
+            if (a.type === "url_citation" && a.url && !urlMap.has(a.url)) {
+              urlMap.set(a.url, a.title || a.url);
             }
           }
         }
@@ -76,10 +112,26 @@ Deno.serve(async (req) => {
     }
   }
 
-  return new Response(JSON.stringify({ text, citations, debug: data.output ? null : data }), {
-    headers: {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    },
-  });
+  // Fetch metadata for each citation in parallel
+  const citationEntries = [...urlMap.entries()];
+  const metaResults = await Promise.all(
+    citationEntries.map(([url]) => fetchMeta(url))
+  );
+
+  const citations: Citation[] = citationEntries.map(([url, title], i) => ({
+    url,
+    title,
+    description: metaResults[i].description,
+    image: metaResults[i].image,
+  }));
+
+  return new Response(
+    JSON.stringify({ text, citations, debug: data.output ? null : data }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+    }
+  );
 });

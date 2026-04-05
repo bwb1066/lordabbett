@@ -52,30 +52,40 @@ function addMessage(container, text, role, citations) {
   msg.className = `concierge-message concierge-${role}`;
 
   if (role === 'assistant') {
+    // Citations as rich cards at the top
+    if (citations?.length) {
+      const sources = document.createElement('div');
+      sources.className = 'concierge-citations';
+      citations.forEach((c) => {
+        const card = document.createElement('a');
+        card.href = c.url;
+        card.target = '_blank';
+        card.rel = 'noopener';
+        card.className = 'concierge-citation-card';
+        let cardHtml = '';
+        if (c.image) {
+          cardHtml += `<img src="${c.image}" alt="" class="concierge-citation-img">`;
+        }
+        cardHtml += '<div class="concierge-citation-text">';
+        cardHtml += `<span class="concierge-citation-title">${c.title}</span>`;
+        if (c.description) {
+          cardHtml += `<span class="concierge-citation-desc">${c.description}</span>`;
+        }
+        const domain = new URL(c.url).hostname;
+        cardHtml += `<span class="concierge-citation-url">${domain}</span>`;
+        cardHtml += '</div>';
+        card.innerHTML = cardHtml;
+        sources.append(card);
+      });
+      msg.append(sources);
+    }
+
     const content = document.createElement('div');
     content.className = 'concierge-content';
     content.innerHTML = markdownToHtml(text);
     msg.append(content);
   } else {
     msg.textContent = text;
-  }
-
-  if (citations?.length) {
-    const sources = document.createElement('div');
-    sources.className = 'concierge-citations';
-    const heading = document.createElement('span');
-    heading.className = 'concierge-citations-heading';
-    heading.textContent = 'Sources';
-    sources.append(heading);
-    citations.forEach((c) => {
-      const link = document.createElement('a');
-      link.href = c.url;
-      link.target = '_blank';
-      link.rel = 'noopener';
-      link.textContent = c.title;
-      sources.append(link);
-    });
-    msg.append(sources);
   }
 
   container.append(msg);

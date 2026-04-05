@@ -99,15 +99,64 @@ export default async function decorate(block) {
       }
 
       if (rightCol) {
+        // Collect link data before consuming DOM
+        const linkData = [];
+        rightCol.querySelectorAll('a').forEach((a) => {
+          linkData.push({
+            href: a.href,
+            text: a.textContent.trim(),
+          });
+        });
+
         const utilLinks = document.createElement('div');
         utilLinks.className = 'nav-util-links';
-        rightCol.querySelectorAll('a').forEach((a) => {
+        linkData.forEach((d) => {
           const link = document.createElement('a');
-          link.href = a.href;
-          link.textContent = a.textContent.trim();
-          if (link.textContent === 'Login/Register') link.className = 'nav-login-btn';
+          link.href = d.href;
+          link.textContent = d.text;
+          if (d.text === 'Login/Register') {
+            link.className = 'nav-login-btn';
+          }
           utilLinks.append(link);
         });
+
+        // Mobile "..." more button + popover
+        const moreWrap = document.createElement('div');
+        moreWrap.className = 'nav-mobile-more-wrap';
+
+        const moreBtn = document.createElement('button');
+        moreBtn.className = 'nav-mobile-more';
+        moreBtn.type = 'button';
+        moreBtn.setAttribute('aria-label', 'More');
+        moreBtn.innerHTML = '&middot;&middot;&middot;';
+
+        const popover = document.createElement('div');
+        popover.className = 'nav-mobile-popover';
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'nav-mobile-popover-close';
+        closeBtn.type = 'button';
+        closeBtn.innerHTML = '&times;';
+        popover.append(closeBtn);
+        linkData.forEach((d) => {
+          if (d.text !== 'Login/Register') {
+            const link = document.createElement('a');
+            link.href = d.href;
+            link.textContent = d.text;
+            popover.append(link);
+          }
+        });
+
+        moreBtn.addEventListener('click', () => {
+          popover.classList.toggle('active');
+        });
+        closeBtn.addEventListener('click', () => {
+          popover.classList.remove('active');
+        });
+
+        moreWrap.append(moreBtn);
+        moreWrap.append(popover);
+        utilLinks.append(moreWrap);
+
         utilitiesInner.append(utilLinks);
       }
     }
@@ -327,7 +376,15 @@ export default async function decorate(block) {
   nav.textContent = '';
   nav.append(navInner);
 
-  // Hamburger
+  // Mobile login icon (between search and hamburger)
+  const mobileLogin = document.createElement('a');
+  mobileLogin.className = 'nav-mobile-login';
+  mobileLogin.href = '#';
+  mobileLogin.setAttribute('aria-label', 'Login/Register');
+  mobileLogin.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M5 20c0-3.87 3.13-7 7-7s7 3.13 7 7"/></svg>';
+  navInner.append(mobileLogin);
+
+  // Hamburger (at end for mobile)
   const hamburger = document.createElement('div');
   hamburger.classList.add('nav-hamburger');
   hamburger.innerHTML = `<button type="button" aria-controls="nav" aria-label="Open navigation">
@@ -337,7 +394,7 @@ export default async function decorate(block) {
     const navSections = nav.querySelector('.nav-sections');
     toggleMenu(nav, navSections);
   });
-  navInner.prepend(hamburger);
+  navInner.append(hamburger);
 
   nav.setAttribute('aria-expanded', 'false');
 

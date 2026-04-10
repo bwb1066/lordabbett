@@ -59,3 +59,104 @@
   height: 36px;
   flex-shrink: 0;
 }
+
+/* config launcher */
+.config-launcher-wrap {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 201;
+}
+
+.config-launcher {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
+  transition: box-shadow 0.15s ease;
+}
+
+.config-launcher:hover {
+  box-shadow: 0 4px 16px rgb(0 0 0 / 15%);
+}
+
+/* config panel dropdown */
+.config-panel {
+  display: none;
+  position: absolute;
+  top: 48px;
+  right: 0;
+  width: 320px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgb(0 0 0 / 15%);
+  padding: 24px;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.config-panel.active {
+  display: flex;
+}
+
+.config-panel-title {
+  font-family: var(--body-font-family, sans-serif);
+  font-size: 18px;
+  font-weight: 600;
+  color: #242727;
+  margin: 0;
+}
+
+.config-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--body-font-family, sans-serif);
+  font-size: 13px;
+  font-weight: 600;
+  color: #242727;
+}
+
+.config-panel input,
+.config-panel textarea {
+  font-family: var(--body-font-family, sans-serif);
+  font-size: 14px;
+  font-weight: 400;
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: #fafafa;
+  color: #242727;
+  outline: none;
+}
+
+.config-panel input:focus,
+.config-panel textarea:focus {
+  border-color: #12417c;
+  background: #fff;
+}
+
+.config-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cfg-save {
+  padding: 8px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  background: #12417c;
+  color: #fff;
+}
+
+.cfg-save:hover {
+  background: #0c2d56;
+}

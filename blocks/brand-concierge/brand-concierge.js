@@ -1,14 +1,27 @@
-const SUPABASE_URL = 'https://cyjquwhkmzyedkwuaffc.supabase.co/functions/v1/brand-chat';
-const CONTACT_URL = 'https://www.lordabbett.com/en-us/financial-advisor/about-us/contact-us.html';
+const SUPABASE_BASE = 'https://cyjquwhkmzyedkwuaffc.supabase.co/functions/v1';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5anF1d2hrbXp5ZWRrd3VhZmZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjY4MjcsImV4cCI6MjA5MDY0MjgyN30.GkMBLXBZr9u34m4uI6ZR-2ZniLZD3RkjropjQw058k4';
 const CONTACT_PHRASES = [
   'contact me', 'contact us', 'reach out', 'speak with',
   'talk to', 'call me', 'rep', 'representative',
   'advisor', 'adviser', 'someone to help',
 ];
 
+// Default site key — can be overridden via settings
+const siteKey = 'lordabbett';
+let brandName = 'Lord Abbett';
+let contactUrl = 'https://www.lordabbett.com/en-us/financial-advisor/about-us/contact-us.html';
+
 let modal = null;
 let questionCount = 0;
 const conversationHistory = [];
+
+function supaHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    apikey: SUPABASE_ANON,
+    Authorization: `Bearer ${SUPABASE_ANON}`,
+  };
+}
 
 function close() {
   if (modal) {
@@ -99,11 +112,11 @@ function addMessage(container, text, role, citations, suggestions) {
       suggestions.filter((q) => q?.trim()).forEach((q) => {
         if (q === '__CONTACT__') {
           const link = document.createElement('a');
-          link.href = CONTACT_URL;
+          link.href = contactUrl;
           link.target = '_blank';
           link.rel = 'noopener';
           link.className = 'concierge-suggestion concierge-contact';
-          link.textContent = 'Have a Lord Abbett rep reach out - or add your email to save time';
+          link.textContent = `Have a ${brandName} representative reach out - or add your email to save time`;
           suggestionsEl.append(link);
         } else {
           const btn = document.createElement('button');
@@ -151,7 +164,7 @@ async function sendMessage(messagesContainer, text) {
 
   // Intercept email addresses — don't send to API
   if (isEmail(text)) {
-    const reply = 'A Lord Abbett representative will be in touch very soon!';
+    const reply = `A ${brandName} representative will be in touch very soon!`;
     addMessage(messagesContainer, reply, 'assistant');
     conversationHistory.push({ role: 'assistant', content: reply });
     return;
@@ -164,14 +177,10 @@ async function sendMessage(messagesContainer, text) {
   messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
   try {
-    const resp = await fetch(SUPABASE_URL, {
+    const resp = await fetch(`${SUPABASE_BASE}/brand-chat`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5anF1d2hrbXp5ZWRrd3VhZmZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjY4MjcsImV4cCI6MjA5MDY0MjgyN30.GkMBLXBZr9u34m4uI6ZR-2ZniLZD3RkjropjQw058k4',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN5anF1d2hrbXp5ZWRrd3VhZmZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwNjY4MjcsImV4cCI6MjA5MDY0MjgyN30.GkMBLXBZr9u34m4uI6ZR-2ZniLZD3RkjropjQw058k4',
-      },
-      body: JSON.stringify({ message: text }),
+      headers: supaHeaders(),
+      body: JSON.stringify({ message: text, site_key: siteKey }),
     });
     const data = await resp.json();
     if (data.debug) console.warn('brand-chat debug:', data.debug);
@@ -182,6 +191,7 @@ async function sendMessage(messagesContainer, text) {
     let reply = data.text || '';
     const citations = data.citations || [];
     const suggestions = data.suggestions || [];
+    if (data.contactUrl) contactUrl = data.contactUrl;
     if (!reply) reply = 'I wasn\'t able to find an answer. Please try rephrasing your question.';
 
     // Remove citation markers like 【...】
@@ -212,12 +222,13 @@ function buildModal(initialQuery) {
   // Header
   const header = document.createElement('div');
   header.className = 'concierge-header';
-  header.innerHTML = '<span class="concierge-title"><svg class="concierge-sparkle" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M9.91819 13.2491C9.69944 13.2491 9.47874 13.1924 9.27952 13.0772C8.79807 12.7989 8.55491 12.2471 8.67307 11.7041L9.40061 8.33011L7.08225 5.77249C6.7092 5.36038 6.64475 4.76077 6.92307 4.27933C7.20139 3.79691 7.75803 3.55374 8.29612 3.67288L11.6701 4.40042L14.2278 2.08206C14.6409 1.70706 15.2405 1.64554 15.7209 1.92288C16.2024 2.2012 16.4455 2.75296 16.3274 3.29593L15.5998 6.66995L17.9182 9.22757C18.2912 9.6387 18.3547 10.2383 18.0774 10.7198C17.7991 11.2002 17.2493 11.4453 16.7053 11.3282L13.3313 10.5987L10.7727 12.918C10.5315 13.1368 10.2258 13.2491 9.91819 13.2491ZM10.8918 8.53324L10.2873 11.333L12.4094 9.40921C12.7121 9.1348 13.1301 9.02151 13.5315 9.10745L16.3332 9.71292L14.4094 7.59085C14.134 7.28616 14.0217 6.86526 14.1096 6.46487L14.7131 3.66702L12.5911 5.59085C12.2864 5.86624 11.8664 5.97757 11.4651 5.89065L8.66722 5.28713L10.5911 7.4092C10.8664 7.71291 10.9787 8.13285 10.8918 8.53324Z" fill="url(#concierge-grad-1)"/><path d="M3.34569 18.252C3.21678 18.252 3.08788 18.2188 2.97069 18.1514C2.68846 17.9883 2.54393 17.6622 2.61229 17.3438L2.91893 15.9258L1.94432 14.8516C1.72557 14.6104 1.68748 14.2549 1.85057 13.9727C2.01366 13.6905 2.34178 13.5498 2.65819 13.6143L4.07616 13.9209L5.15038 12.9463C5.39257 12.7266 5.74608 12.6895 6.02929 12.8526C6.31152 13.0157 6.45605 13.3418 6.38769 13.6602L6.08105 15.0782L7.05566 16.1524C7.27441 16.3936 7.3125 16.7491 7.14941 17.0313C6.98632 17.3135 6.65722 17.4522 6.34179 17.3897L4.92382 17.0831L3.8496 18.0577C3.708 18.1856 3.52733 18.252 3.34569 18.252Z" fill="url(#concierge-grad-2)"/><defs><linearGradient id="concierge-grad-1" x1="6.75" y1="1.75" x2="19.29" y2="3.04" gradientUnits="userSpaceOnUse"><stop stop-color="#D73220"/><stop offset="0.33" stop-color="#D92361"/><stop offset="1" stop-color="#7155FA"/></linearGradient><linearGradient id="concierge-grad-2" x1="1.75" y1="12.75" x2="7.75" y2="13.37" gradientUnits="userSpaceOnUse"><stop stop-color="#D73220"/><stop offset="0.33" stop-color="#D92361"/><stop offset="1" stop-color="#7155FA"/></linearGradient></defs></svg> Ask the Lord Abbett Concierge</span>';
+  header.innerHTML = `<span class="concierge-title"><svg class="concierge-sparkle" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M9.91819 13.2491C9.69944 13.2491 9.47874 13.1924 9.27952 13.0772C8.79807 12.7989 8.55491 12.2471 8.67307 11.7041L9.40061 8.33011L7.08225 5.77249C6.7092 5.36038 6.64475 4.76077 6.92307 4.27933C7.20139 3.79691 7.75803 3.55374 8.29612 3.67288L11.6701 4.40042L14.2278 2.08206C14.6409 1.70706 15.2405 1.64554 15.7209 1.92288C16.2024 2.2012 16.4455 2.75296 16.3274 3.29593L15.5998 6.66995L17.9182 9.22757C18.2912 9.6387 18.3547 10.2383 18.0774 10.7198C17.7991 11.2002 17.2493 11.4453 16.7053 11.3282L13.3313 10.5987L10.7727 12.918C10.5315 13.1368 10.2258 13.2491 9.91819 13.2491ZM10.8918 8.53324L10.2873 11.333L12.4094 9.40921C12.7121 9.1348 13.1301 9.02151 13.5315 9.10745L16.3332 9.71292L14.4094 7.59085C14.134 7.28616 14.0217 6.86526 14.1096 6.46487L14.7131 3.66702L12.5911 5.59085C12.2864 5.86624 11.8664 5.97757 11.4651 5.89065L8.66722 5.28713L10.5911 7.4092C10.8664 7.71291 10.9787 8.13285 10.8918 8.53324Z" fill="url(#concierge-grad-1)"/><path d="M3.34569 18.252C3.21678 18.252 3.08788 18.2188 2.97069 18.1514C2.68846 17.9883 2.54393 17.6622 2.61229 17.3438L2.91893 15.9258L1.94432 14.8516C1.72557 14.6104 1.68748 14.2549 1.85057 13.9727C2.01366 13.6905 2.34178 13.5498 2.65819 13.6143L4.07616 13.9209L5.15038 12.9463C5.39257 12.7266 5.74608 12.6895 6.02929 12.8526C6.31152 13.0157 6.45605 13.3418 6.38769 13.6602L6.08105 15.0782L7.05566 16.1524C7.27441 16.3936 7.3125 16.7491 7.14941 17.0313C6.98632 17.3135 6.65722 17.4522 6.34179 17.3897L4.92382 17.0831L3.8496 18.0577C3.708 18.1856 3.52733 18.252 3.34569 18.252Z" fill="url(#concierge-grad-2)"/><defs><linearGradient id="concierge-grad-1" x1="6.75" y1="1.75" x2="19.29" y2="3.04" gradientUnits="userSpaceOnUse"><stop stop-color="#D73220"/><stop offset="0.33" stop-color="#D92361"/><stop offset="1" stop-color="#7155FA"/></linearGradient><linearGradient id="concierge-grad-2" x1="1.75" y1="12.75" x2="7.75" y2="13.37" gradientUnits="userSpaceOnUse"><stop stop-color="#D73220"/><stop offset="0.33" stop-color="#D92361"/><stop offset="1" stop-color="#7155FA"/></linearGradient></defs></svg> Ask the ${brandName} Concierge</span>`;
   const closeBtn = document.createElement('button');
   closeBtn.className = 'concierge-close';
   closeBtn.type = 'button';
   closeBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
   closeBtn.addEventListener('click', close);
+
   header.append(closeBtn);
   dialog.append(header);
 
@@ -332,6 +343,17 @@ export default async function openConcierge(query) {
     link.href = '/blocks/brand-concierge/brand-concierge.css';
     document.head.append(link);
   }
+
+  // Fetch config for brand name
+  try {
+    const r = await fetch(
+      `${SUPABASE_BASE}/brand-config?site_key=${siteKey}`,
+      { headers: supaHeaders() },
+    );
+    const cfg = await r.json();
+    if (cfg.brand_name) brandName = cfg.brand_name;
+    if (cfg.contact_url) contactUrl = cfg.contact_url;
+  } catch { /* use defaults */ }
 
   buildModal(query);
 }

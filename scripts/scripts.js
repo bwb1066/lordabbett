@@ -137,7 +137,8 @@ async function loadEager(doc) {
   if (main) {
     decorateMain(main);
     document.body.classList.add('appear');
-    await loadSection(main.querySelector('.section'), waitForFirstImage);
+    const section = main.querySelector('.section');
+    await loadSection(section, document.body.classList.contains('quick-edit') ? null : waitForFirstImage);
   }
 
   try {

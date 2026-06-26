@@ -138,7 +138,8 @@ async function loadEager(doc) {
     decorateMain(main);
     document.body.classList.add('appear');
     const section = main.querySelector('.section');
-    await loadSection(section, document.body.classList.contains('quick-edit') ? null : waitForFirstImage);
+    const isQuickEdit = new URLSearchParams(window.location.search).has('quick-edit');
+    await loadSection(section, isQuickEdit ? null : waitForFirstImage);
   }
 
   try {

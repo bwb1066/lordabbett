@@ -196,5 +196,6 @@ loadPage();
   // eslint-disable-next-line import/no-unresolved
   if (hasPreview) import('../tools/da/da.js').then((mod) => mod.default(loadPage));
   const hasQE = searchParams.has('quick-edit');
+  // eslint-disable-next-line import/no-cycle
   if (hasQE) import('../tools/quick-edit/quick-edit.js').then((mod) => mod.default());
 }());

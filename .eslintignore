@@ -1,2 +1,4 @@
 helix-importer-ui
 *.min.js
+blocks/brand-concierge/brand-concierge-core.js
+blocks/brand-concierge/brand-concierge.js

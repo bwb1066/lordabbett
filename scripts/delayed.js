@@ -39,3 +39,5 @@
 
   document.body.append(launcher);
 }());
+
+import('./utils/beacon.js').then(({ default: beacon }) => beacon());
